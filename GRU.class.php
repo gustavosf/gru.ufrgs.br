@@ -240,7 +240,7 @@ class GRU {
 			}
 			elseif ($field['null'] and !isset($this->properties[$property]))
 			{
-				$this->properties[$property] = isset($fields['default']) ? $fields['default'] : '';
+				$this->properties[$property] = isset($field['default']) ? $field['default'] : '';
 			}
 
 			$prepared[$field['field']] = $this->properties[$property];
@@ -251,6 +251,7 @@ class GRU {
 	public function submit()
 	{
 		$prepared = $this->prepare_properties();
+		return $prepared;
 	}
 
 }
