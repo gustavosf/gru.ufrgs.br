@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * GRU generation (extraction) for UFRGS services
+ *
+ * @version    1.0
+ * @author     Gustavo Seganfredo
+  */
 class GRU {
 	
 	/**
@@ -188,6 +194,11 @@ class GRU {
 	 */
 	private $properties;
 
+	/**
+	 * Creates a GRU object containing some properties
+	 *
+	 * @param  array
+	 */
 	public function __construct($properties = array())
 	{
 		foreach ($properties as $property => $value)
@@ -200,7 +211,7 @@ class GRU {
 	 * Forge function, for some syntatic sugar
 	 *
 	 * @access  public
-	 * @var     array
+	 * @param     array
 	 * @return  object  A new GRU object
 	 */
 	public static function forge($props)
@@ -212,8 +223,8 @@ class GRU {
 	 * Analyze and set values to some property
 	 *
 	 * @access  public
-	 * @var     string  the property key
-	 * @var     string  the property value
+	 * @param   string  the property key
+	 * @param   string  the property value
 	 * @return  bool    property value was/wasn't set
 	 */
 	public function set_property($property, $value)
@@ -287,7 +298,7 @@ class GRU {
 		// then, replace relative to full path on images uris
 		$gru = preg_replace('/"imagens\/(.*?)"/', $this->resource_path.'imagens/$1', $gru);
 		
-		// return the page HTML
+		// return the page's HTML
 		return $gru;
 	}
 
