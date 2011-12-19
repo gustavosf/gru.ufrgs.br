@@ -2,6 +2,12 @@
 
 class GRU {
 	
+	/**
+	 * Contains UGR and Descriptions codes (code => ugr/description)
+	 *
+	 * @access private
+	 * @var    array
+	 */
 	private $codes = array(
 		'ugr' => array(
 			'153341' => 'Almoxarifado Central',
@@ -63,7 +69,7 @@ class GRU {
 			'153551' => 'Superintendência de Infra-Estrutura',
 			'153114' => 'Universidade Federal do Rio Grande do Sul',
 		),
-		'recolhimento' => array(
+		'descriptions' => array(
 			'28803-91' => 'Aluguéis com contrato',
 			'28802-01' => 'Aluguéis sem contrato',
 			'28818-71' => 'Comércio de Livros, periódicos, material Escolar e publicações.',
@@ -91,6 +97,12 @@ class GRU {
 		),
 	);
 
+	/**
+	 * Describes all the GRU fields
+	 *
+	 * @access private
+	 * @var    array
+	 */
 	private $fields = array(
 		'type' => array(
 			'field' => 'Tipo',
@@ -159,6 +171,12 @@ class GRU {
 		),
 	);
 
+	/**
+	 * The data to be submitted
+	 *
+	 * @access private
+	 * @var    array
+	 */
 	private $properties;
 
 	public function __construct($properties = array())
@@ -181,6 +199,14 @@ class GRU {
 		return new GRU($props);
 	}
 
+	/**
+	 * Analyze and set values to some property
+	 *
+	 * @access  public
+	 * @var     string  the property key
+	 * @var     string  the property value
+	 * @return  bool    property value was/wasn't set
+	 */
 	public function set_property($property, $value)
 	{
 		if (isset($this->fields[$property]))
@@ -200,7 +226,8 @@ class GRU {
 	 * Prepare the already filled properties to submit
 	 *
 	 * @access  private
-	 * @return  array    Translation from class key-values to the real keys
+	 * @return  array      Translation from class key-values to the real keys
+	 * @throws  Exception
 	 */
 	private function prepare_properties()
 	{
