@@ -3,12 +3,21 @@
 class GRU {
 	
 	/**
+	 * Resource's path / URI
+	 * 
+	 * @access protected
+	 * @var    string
+	 */
+	protected $resource_path = 'http://www1.ufrgs.br/guiarecolhimento/';
+	protected $resource      = 'GuiaPagamentoExterno.php';
+
+	/**
 	 * Contains UGR and Descriptions codes (code => ugr/description)
 	 *
-	 * @access private
+	 * @access protected
 	 * @var    array
 	 */
-	private $codes = array(
+	protected $codes = array(
 		'ugr' => array(
 			'153341' => 'Almoxarifado Central',
 			'153328' => 'Biblioteca Central',
@@ -100,10 +109,10 @@ class GRU {
 	/**
 	 * Describes all the GRU fields
 	 *
-	 * @access private
+	 * @access protected
 	 * @var    array
 	 */
-	private $fields = array(
+	protected $fields = array(
 		'type' => array(
 			'field' => 'Tipo',
 			'null' => true,
@@ -225,11 +234,11 @@ class GRU {
 	/**
 	 * Prepare the already filled properties to submit
 	 *
-	 * @access  private
+	 * @access  protected
 	 * @return  array      Translation from class key-values to the real keys
 	 * @throws  Exception
 	 */
-	private function prepare_properties()
+	protected function prepare_properties()
 	{
 		$prepared = array();
 		foreach ($this->fields as $property => $field)
@@ -248,21 +257,38 @@ class GRU {
 		return $prepared;
 	}
 	
+	/**
+	 * Submit data to resource, recovering the "Guia de Pagamento" in HTML format
+	 *
+	 * @return  string     generated document in HTML format
+	 * @throws  Exception  if resource returns an error
+	 */
 	public function submit()
 	{
 		$prepared = $this->prepare_properties();
-		return $prepared;
+		$prepared = http_build_query($prepared);
+		
+		$options = array(
+			'http' => array(
+				'method'  => 'POST',
+				'header'  => "Content-Type: application/x-www-form-urlencoded\r\nConnection: close\r\nContent-Length: ".strlen($prepared)."\r\n",
+				'content' => $prepared,
+			)
+		);
+		$context = stream_context_create($options);
+		$gru = file_get_contents($this->resource_path.$this->resource, false, $context);
+		
+		// checks if an error was returned
+		if (preg_match("/alert('(.*?)')/", $gru, $error))
+		{
+			throw new Exception('An error has returned: '.$error[1]);
+		}
+		
+		// then, replace relative to full path on images uris
+		$gru = preg_replace('/"imagens\/(.*?)"/', $this->resource_path.'imagens/$1', $gru);
+		
+		// return the page HTML
+		return $gru;
 	}
 
 }
-
-$props = array(
-	'name' => 'Gustavo Seganfredo',
-	'cpf' => '015.347.130-18',
-	'expiration' => '25/12/2011',
-	'value' => '25,00',
-	'description_code' => '28883-71',
-	'ugr_code' => '153334',
-);
-
-// GRU::forge($props)->submit();
