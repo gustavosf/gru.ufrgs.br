@@ -196,10 +196,15 @@ class GRU {
 		return false;
 	}
 
-	public function submit()
+	/**
+	 * Prepare the already filled properties to submit
+	 *
+	 * @access  private
+	 * @return  array    Translation from class key-values to the real keys
+	 */
+	private function prepare_properties()
 	{
 		$prepared = array();
-
 		foreach ($this->fields as $property => $field)
 		{
 			if (!$field['null'] and !isset($this->properties[$property]))
@@ -214,6 +219,11 @@ class GRU {
 			$prepared[$field['field']] = $this->properties[$property];
 		}
 		return $prepared;
+	}
+	
+	public function submit()
+	{
+		$prepared = $this->prepare_properties();
 	}
 
 }
