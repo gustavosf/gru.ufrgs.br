@@ -169,6 +169,18 @@ class GRU {
 		}
 	}
 
+	/**
+	 * Forge function, for some syntatic sugar
+	 *
+	 * @access  public
+	 * @var     array
+	 * @return  object  A new GRU object
+	 */
+	public static function forge($props)
+	{
+		return new GRU($props);
+	}
+
 	public function set_property($property, $value)
 	{
 		if (isset($this->fields[$property]))
@@ -186,6 +198,8 @@ class GRU {
 
 	public function submit()
 	{
+		$prepared = array();
+
 		foreach ($this->fields as $property => $field)
 		{
 			if (!$field['null'] and !isset($this->properties[$property]))
@@ -196,12 +210,13 @@ class GRU {
 			{
 				$this->properties[$property] = isset($fields['default']) ? $fields['default'] : '';
 			}
+
+			$prepared[$field['field']] = $this->properties[$property];
 		}
-		return $this->properties;
+		return $prepared;
 	}
 
 }
-
 
 $props = array(
 	'name' => 'Gustavo Seganfredo',
@@ -211,3 +226,5 @@ $props = array(
 	'description_code' => '28883-71',
 	'ugr_code' => '153334',
 );
+
+// GRU::forge($props)->submit();
