@@ -1,3 +1,7 @@
+Guias de Recolhimento da União (GRU) são artefatos utilizados pela [Universidade Federal do Rio Grande do Sul](http://www.ufrgs.br) para a geração de boletos de pagamento à instituição. É a única maneira oficial de efetuar pagamentos diretos à Universidade.  
+
+Este repositório visa manter uma interface simples para configuração e extração do HTML do boleto através do formulário oficial, para armazenamento e posterior reexibição sem a necessidade da geração um novo documento.
+
 ## Uso
 
 Um exemplo simples de uso da classe para geração de uma guia de recolhimento:
