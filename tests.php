@@ -1,11 +1,16 @@
 <?php
 
-require 'GRU.class.php';
+require 'gru.class.php';
 
 class GRUMock extends GRU {
 	protected $resource_path = 'php://';
 	protected $resource      = 'guia';
 
+	public static function forge($props)
+	{
+		return new GRUMock($props);
+	}
+	
 	public function get_param($param)
 	{
 		return isset($properties[$param]) ? $properties[$param] : false;
