@@ -189,10 +189,10 @@ class GRU {
 	/**
 	 * The data to be submitted
 	 *
-	 * @access private
+	 * @access protected
 	 * @var    array
 	 */
-	private $properties;
+	protected $properties;
 
 	/**
 	 * Creates a GRU object containing some properties
@@ -290,7 +290,7 @@ class GRU {
 		$gru = file_get_contents($this->resource_path.$this->resource, false, $context);
 		
 		// checks if an error was returned
-		if (preg_match("/alert('(.*?)')/", $gru, $error))
+		if (preg_match("/alert\('(.*?)'\)/", $gru, $error))
 		{
 			throw new Exception('An error has returned: '.$error[1]);
 		}

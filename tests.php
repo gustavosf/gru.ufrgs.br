@@ -3,8 +3,8 @@
 require 'gru.class.php';
 
 class GRUMock extends GRU {
-	protected $resource_path = 'php://';
-	protected $resource      = 'guia';
+	//protected $resource_path = 'php://';
+	//protected $resource      = 'guia';
 
 	public static function forge($props)
 	{
@@ -13,7 +13,7 @@ class GRUMock extends GRU {
 	
 	public function get_param($param)
 	{
-		return isset($properties[$param]) ? $properties[$param] : false;
+		return isset($this->properties[$param]) ? $this->properties[$param] : false;
 	}
 }
 
@@ -23,7 +23,7 @@ class GRUTestCase extends PHPUnit_Framework_TestCase {
 
 	public function testForge()
 	{
-		$gru => GRUMock::forge(array(
+		$gru = GRUMock::forge(array(
 			'name' => 'Gustavo',
 			'cpf'  => '012.345.678-91',
 		));
@@ -37,53 +37,60 @@ class GRUTestCase extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * @depends testForge
-	 * @expectedException InvalidArgumentException
 	 * Erros no formato das propriedades
 	 */
-	 public function testSetProperty($gru)
-	 {
-	 	$exceptions = 0;
-	 	try {
-			$gru->set_property('cpf', '1234567891');
-			$gru->set_property('cpf', '123.456.789.10');
-			$gru->set_property('cpf', '123.456.789.10');
-			$gru->set_property('cpf', '123.456-789-10');
-			$gru->set_property('cpf', '123-456-789-10');
-			$gru->set_property('cpf', '123.456.78910');
-			$gru->set_property('cpf', 'a23.456.789-10');
-			$gru->set_property('cpf', '123.456.789-aa');
-			$gru->set_property('cgc', '12234567901234');
-			$gru->set_property('cgc', '122.345.679.012/34');
-			$gru->set_property('cgc', '122.345.679/012-34');
-			$gru->set_property('cgc', '12.234.5679/012-34');
-			$gru->set_property('cgc', 'a2.234.567/9012-34');
-			$gru->set_property('cgc', '12.234.567/a012-34');
-			$gru->set_property('cgc', '12.234.567/9012-a4');
-			$gru->set_property('expiration', '7/12/1986');
-			$gru->set_property('expiration', '07-12-1986');
-			$gru->set_property('expiration', '2015-12-07');
-			$gru->set_property('expiration', '40/12/2015');
-			$gru->set_property('expiration', '01/13/2015');
-			$gru->set_property('expiration', '01/13/2015');
-			//$gru->set_property('expiration', date('d/m/Y', strtotime('-1 day')));
-			$gru->set_property('value', '-15,00');
-			$gru->set_property('value', -15);
-			$gru->set_property('value', 0);
-			$gru->set_property('value', false);
-			$gru->set_property('value', '1.00');
-			$gru->set_property('value', '1');
-			$gru->set_property('value', 'R$1');
-			$gru->set_property('value', 'R$1,00');
-	 	} catch (InvalidArgumentException $e) {
-	 		$exceptions += 1;
-	 	}
+	public function testSetProperty($gru)
+	{
+		$tests = array(
+			array('cpf', '1234567891'),
+			array('cpf', '1234567891'),
+			array('cpf', '123.456.789.10'),
+			array('cpf', '123.456.789.10'),
+			array('cpf', '123.456-789-10'),
+			array('cpf', '123-456-789-10'),
+			array('cpf', '123.456.78910'),
+			array('cpf', 'a23.456.789-10'),
+			array('cpf', '123.456.789-aa'),
+			array('cgc', '12234567901234'),
+			array('cgc', '122.345.679.012/34'),
+			array('cgc', '122.345.679/012-34'),
+			array('cgc', '12.234.5679/012-34'),
+			array('cgc', 'a2.234.567/9012-34'),
+			array('cgc', '12.234.567/a012-34'),
+			array('cgc', '12.234.567/9012-a4'),
+			array('expiration', '7/12/1986'),
+			array('expiration', '07-12-1986'),
+			array('expiration', '2015-12-07'),
+			array('expiration', '40/12/2015'),
+			array('expiration', '01/13/2015'),
+			array('expiration', '01/13/2015'),
+			//array('expiration', date('d/m/Y', strtotime('-1 day'))),
+			array('value', '-15,00'),
+			array('value', -15),
+			array('value', 0),
+			array('value', false),
+			array('value', '1.00'),
+			array('value', '1'),
+			array('value', 'R$1'),
+			array('value', 'R$1,00'),
+		);
 
-	 	$this->assertEquals(29, $exceptions);
-	 	$this->assertEquals('012.345.678-91', $gru->cpf);
-	 	$this->assertEquals(false, $gru->cgc);
-	 	$this->assertEquals(false, $gru->expiration);
-	 	$this->assertEquals(false, $gru->value);
-	 }
+		$exceptions = 0;
+		foreach ($tests as $test)
+		{
+			try {
+				$gru->set_property($test[0], $test[1]);
+			} catch (InvalidArgumentException $e) {
+				$exceptions += 1;
+			}
+		}	
+
+		$this->assertEquals(sizeof($tests), $exceptions);
+		$this->assertEquals('012.345.678-91', $gru->get_param('cpf'));
+		$this->assertEquals(false, $gru->get_param('cgc'));
+		$this->assertEquals(false, $gru->get_param('expiration'));
+		$this->assertEquals(false, $gru->get_param('value'));
+	}
 
 	/**
 	 * @depends testForge
@@ -96,8 +103,9 @@ class GRUTestCase extends PHPUnit_Framework_TestCase {
 		$gru->set_property('obs', 'hello-gru');
 		$gru->set_property('ugr_code', '153334');
 		$gru->set_property('description_code', '28840-31');
+		
+		// submition should return an exception, because CPF is invalid
 		$gru->submit();
 	}
-
 
 }
