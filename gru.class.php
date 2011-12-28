@@ -139,7 +139,7 @@ class GRU {
 		),
 		'cgc' => array(
 			'field' => 'CGC',
-			'format' => '\d{2}\.(\d{3}){2}\/\d{4}\-\d{2}',
+			'format' => '\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}',
 			'null' => true
 		),
 		'contract' => array(
@@ -234,7 +234,7 @@ class GRU {
 			if (isset($this->fields[$property]['format']) and
 				!preg_match('/^'.$this->fields[$property]['format'].'$/', $value))
 			{
-				throw new Exception('Property "'.$property.'" doesn\'t match correct field format');
+				throw new InvalidArgumentException('Property "'.$property.'" doesn\'t match correct field format');
 			}
 			$this->properties[$property] = $value;
 			return true;
@@ -256,7 +256,7 @@ class GRU {
 		{
 			if (!$field['null'] and !isset($this->properties[$property]))
 			{
-				throw new Exception('Some required fields weren\'t filled');
+				throw new DomainException('Some required fields weren\'t filled');
 			}
 			elseif ($field['null'] and !isset($this->properties[$property]))
 			{
